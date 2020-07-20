@@ -1,14 +1,7 @@
 const express = require('express')
 const path = require('path')
-const app = express()
 const bodyParser = require('body-parser')
-const PORT = process.env.PORT || 9000
 const fetch = require('isomorphic-fetch')
-
-//different routes
-const routerMovies = express.Router()
-const routerSeries = express.Router()
-const routerTrailer = express.Router()
 
 let keys
 if (process.env.NODE_ENV === 'production') {
@@ -18,6 +11,9 @@ if (process.env.NODE_ENV === 'production') {
   keys = require('./keys.json')
 }
 
+const app = express()
+const router = express.Router()
+const PORT = process.env.PORT || 9000
 
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
@@ -44,44 +40,47 @@ app.options(/(.*)/, (req, res, next) => {
 // Serve static assets
 app.use(express.static(path.resolve(__dirname, 'build')))
 
-app.get("/", (req,res)=>{
-  res.send("hello world")
+router.get('/', function (req, res) {
+  res.send('Ready!')
 })
 
-// Serve static assets
-
-
-app.use('/api', routerMovies)
-app.use('/api', routerSeries)
-app.use('/api', routerTrailer)
-
-routerMovies.route('/movies').get((req,res)=>{
-  const {language,page} = req.query
-  fetch(`https://api.themoviedb.org/3/movie/top_rated?api_key=${keys.MOVIEKEY}&language=en-US&page=${page}`)
-            .then(res=>res.json())
-            .then(json=>res.send(json))
-})
-
-routerSeries.route('/TVShows').get((req,res)=>{
-  const {language,page} = req.query
-  fetch(`https://api.themoviedb.org/3/tv/popular?api_key=${keys.MOVIEKEY}&language=en-US&page=${page}`)
-            .then(res=>res.json())
-            .then(json=>res.send(json))
-})
-
-routerTrailer.route('/trailer').get((req,res)=>{
-  const {part, q} = req.query
-  fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&key=${keys.APIKEYYOUTUBE}&q=${q}%20trailer`)
-            .then(res=>res.json())
-            .then(json=>res.send(json))
-})
-
-
-
+app.use('/api', router)
 app.listen(PORT, function () {
   console.log(`API running on PORT ${PORT}`)
 })
 
+router.route('/movies')
+  .get((req, res) => {
+    const {language,page} = req.query
+    fetch(`https://api.themoviedb.org/3/movie/top_rated?api_key=${keys.MOVIEKEY}&language=en-US&page=${page}`).then(res => res.json()).then(response => {
+      res.json(response)
+    })
+  })
+
+  router.route('/TVShows')
+  .get((req, res) => {
+    const {language,page} = req.query
+    fetch(`https://api.themoviedb.org/3/tv/popular?api_key=${keys.MOVIEKEY}&language=en-US&page=${page}`).then(res => res.json()).then(response => {
+      res.json(response)
+    })
+  })
+
+  router.route('/trailer')
+  .get((req, res) => {
+    const {part, q} = req.query
+    fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&key=${keys.APIKEYYOUTUBE}&q=${q}%20trailer`).then(res => res.json()).then(response => {
+      res.json(response)
+    })
+  })
+
+
+
+// routerTrailer.route('/trailer').get((req,res)=>{
+//   const {part, q} = req.query
+//   fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&key=${keys.APIKEYYOUTUBE}&q=${q}%20trailer`)
+//             .then(res=>res.json())
+//             .then(json=>res.send(json))
+// })
 
 
 
