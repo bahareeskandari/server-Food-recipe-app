@@ -5,12 +5,10 @@ const fetch = require('isomorphic-fetch')
 
 let keys
 if (process.env.NODE_ENV === 'production') {
-  console.log("on process?")
   keys = process.env
 } else {
-
   keys = require('./keys.json')
-  console.log(keys.APIKEY)
+
 }
 
 const app = express()
@@ -55,6 +53,7 @@ app.listen(PORT, function () {
   router.route('/Movies')
   .get((req, res) => {
     const {language,page} = req.query
+    console.log(keys.MOVIEKEY)
     fetch(`https://api.themoviedb.org/3/movie/top_rated?api_key=${keys.MOVIEKEY}&language=en-US&page=${page}`).then(res => res.json()).then(response => {
       res.json(response)
     })
