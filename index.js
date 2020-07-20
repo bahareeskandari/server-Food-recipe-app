@@ -12,6 +12,7 @@ const routerTrailer = express.Router()
 
 let keys
 if (process.env.NODE_ENV === 'production') {
+  console.log("on process?")
   keys = process.env
 } else {
   keys = require('./keys.json')
@@ -56,21 +57,21 @@ app.use('/api', routerTrailer)
 
 routerMovies.route('/movies').get((req,res)=>{
   const {language,page} = req.query
-  fetch(`https://api.themoviedb.org/3/movie/top_rated?api_key=${process.env.MOVIEKEY}&language=en-US&page=${page}`)
+  fetch(`https://api.themoviedb.org/3/movie/top_rated?api_key=${keys.MOVIEKEY}&language=en-US&page=${page}`)
             .then(res=>res.json())
             .then(json=>res.send(json))
 })
 
 routerSeries.route('/TVShows').get((req,res)=>{
   const {language,page} = req.query
-  fetch(`https://api.themoviedb.org/3/tv/popular?api_key=${process.env.MOVIEKEY}&language=en-US&page=${page}`)
+  fetch(`https://api.themoviedb.org/3/tv/popular?api_key=${keys.MOVIEKEY}&language=en-US&page=${page}`)
             .then(res=>res.json())
             .then(json=>res.send(json))
 })
 
 routerTrailer.route('/trailer').get((req,res)=>{
   const {part, q} = req.query
-  fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&key=${process.env.APIKEYYOUTUBE}&q=${q}%20trailer`)
+  fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&key=${keys.APIKEYYOUTUBE}&q=${q}%20trailer`)
             .then(res=>res.json())
             .then(json=>res.send(json))
 })
