@@ -44,9 +44,9 @@ app.options(/(.*)/, (req, res, next) => {
 // Serve static assets
 app.use(express.static(path.resolve(__dirname, 'build')))
 
-app.get("/", (req,res)=>{
-  res.send("hello world")
-})
+// app.get("/", (req,res)=>{
+//   res.send("hello world")
+// })
 
 // Serve static assets
 
