@@ -52,7 +52,7 @@ app.listen(PORT, function () {
 })
 
 
-  router.route('/movies')
+  router.route('/Movies')
   .get((req, res) => {
     const {language,page} = req.query
     fetch(`https://api.themoviedb.org/3/movie/top_rated?api_key=${keys.MOVIEKEY}&language=en-US&page=${page}`).then(res => res.json()).then(response => {
