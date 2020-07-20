@@ -52,7 +52,13 @@ app.listen(PORT, function () {
 router.route('/movies')
   .get((req, res) => {
     const {language,page} = req.query
-    fetch(`https://api.themoviedb.org/3/movie/top_rated?api_key=${keys.MOVIEKEY}&language=en-US&page=${page}`).then(res => res.json()).then(response => {
+    fetch(`https://api.themoviedb.org/3/movie/top_rated?api_key=${keys.MOVIEKEY}&language=en-US&page=${page}`, , {
+      headers : {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+       }
+
+    }).then(res => res.json()).then(response => {
       res.json(response)
     })
   })
@@ -60,7 +66,13 @@ router.route('/movies')
   router.route('/TVShows')
   .get((req, res) => {
     const {language,page} = req.query
-    fetch(`https://api.themoviedb.org/3/tv/popular?api_key=${keys.MOVIEKEY}&language=en-US&page=${page}`).then(res => res.json()).then(response => {
+    fetch(`https://api.themoviedb.org/3/tv/popular?api_key=${keys.MOVIEKEY}&language=en-US&page=${page}`, , {
+      headers : {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+       }
+
+    }).then(res => res.json()).then(response => {
       res.json(response)
     })
   })
