@@ -14,7 +14,10 @@ if (process.env.NODE_ENV === 'production') {
 
 const app = express()
 const router = express.Router()
-const PORT = process.env.PORT || 9000
+
+const PORT = process.env.PORT || '9000'
+app.set("port", PORT)
+
 
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
