@@ -4,11 +4,12 @@ const bodyParser = require('body-parser')
 const fetch = require('isomorphic-fetch')
 
 let keys
+let YELP_KEY
 if (process.env.NODE_ENV === 'production') {
-  keys = process.env
+  YELP_KEY = process.env.YELP_KEY
 } else {
   keys = require('./keys.json')
-
+  YELP_KEY = keys.yelpKey
 }
 
 const app = express()
@@ -34,45 +35,29 @@ app.use((req, res, next) => {
 })
 
 app.options(/(.*)/, (req, res, next) => {
-  res.sendStatus(200) // Always respond OK on OPTIONS requests.
+  res.sendStatus(200) //Always respond OK on OPTIONS requests.
 })
 
-// Serve static assets
-app.use(express.static(path.resolve(__dirname, 'build')))
+ // Serve static assets
+ app.use(express.static(path.resolve(__dirname, 'build')))
 
-router.get('/', function (req, res) {
-  res.send('Ready!')
-})
+ router.get('/', function (req, res) {
+   res.send('Ready!')
+ })
 
-app.use('/api', router)
-app.listen(PORT, function () {
-  console.log(`API running on PORT ${PORT}`)
-})
+ app.use('/api', router)
+ app.listen(PORT, function () {
+   console.log(`API running on PORT ${PORT}`)
+ })
 
-
-  router.route('/Movies')
-  .get((req, res) => {
-    const {language,page} = req.query
-    console.log(keys.MOVIEKEY)
-    fetch(`https://api.themoviedb.org/3/movie/top_rated?api_key=${keys.MOVIEKEY}&language=en-US&page=${page}`).then(res => res.json()).then(response => {
-      res.json(response)
-    })
-  })
-
-
-  router.route('/TVShows')
-  .get((req, res) => {
-    const {language,page} = req.query
-    fetch(`https://api.themoviedb.org/3/tv/popular?api_key=${keys.MOVIEKEY}&language=en-US&page=${page}`).then(res => res.json()).then(response => {
-      res.json(response)
-    })
-  })
-
-
-  router.route('/trailer')
-  .get((req, res) => {
-    const {part, q} = req.query
-    fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&key=${keys.APIKEYYOUTUBE}&q=${q}%20trailer`).then(res => res.json()).then(response => {
-      res.json(response)
-    })
-  })
+ router.route('/getBusinesses')
+   .get((req, res) => {
+     const {term, location, sortBy} = req.query
+     fetch(`https://api.yelp.com/v3/businesses/search?term=${term}&location=${location}&sort_by=${sortBy}`, {
+       headers: {
+         Authorization: `Bearer ${YELP_KEY}`
+       }
+     }).then(res => res.json()).then(response => {
+       res.json(response)
+     })
+   })

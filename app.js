@@ -35,29 +35,29 @@
 // })
 
 // app.options(/(.*)/, (req, res, next) => {
-//   res.sendStatus(200) // Always respond OK on OPTIONS requests.
+//   res.sendStatus(200) //Always respond OK on OPTIONS requests.
 // })
 
-// // Serve static assets
-// app.use(express.static(path.resolve(__dirname, 'build')))
+//  // Serve static assets
+//  app.use(express.static(path.resolve(__dirname, 'build')))
 
-// router.get('/', function (req, res) {
-//   res.send('Ready!')
-// })
+//  router.get('/', function (req, res) {
+//    res.send('Ready!')
+//  })
 
-// app.use('/api', router)
-// app.listen(PORT, function () {
-//   console.log(`API running on PORT ${PORT}`)
-// })
+//  app.use('/api', router)
+//  app.listen(PORT, function () {
+//    console.log(`API running on PORT ${PORT}`)
+//  })
 
-// router.route('/getBusinesses')
-//   .get((req, res) => {
-//     const {term, location, sortBy} = req.query
-//     fetch(`https://api.yelp.com/v3/businesses/search?term=${term}&location=${location}&sort_by=${sortBy}`, {
-//       headers: {
-//         Authorization: `Bearer ${YELP_KEY}`
-//       }
-//     }).then(res => res.json()).then(response => {
-//       res.json(response)
-//     })
-//   })
+//  router.route('/getBusinesses')
+//    .get((req, res) => {
+//      const {term, location, sortBy} = req.query
+//      fetch(`https://api.yelp.com/v3/businesses/search?term=${term}&location=${location}&sort_by=${sortBy}`, {
+//        headers: {
+//          Authorization: `Bearer ${YELP_KEY}`
+//        }
+//      }).then(res => res.json()).then(response => {
+//        res.json(response)
+//      })
+//    })
