@@ -5,11 +5,14 @@ const fetch = require('isomorphic-fetch')
 
 let keys
 let YELP_KEY
+let QUOTESKEY
 if (process.env.NODE_ENV === 'production') {
   YELP_KEY = process.env.YELP_KEY
+  QUOTESKEY = process.env.QUOTESKEY
 } else {
   keys = require('./keys.json')
   YELP_KEY = keys.yelpKey
+  QUOTESKEY = keys.quotesKey
 }
 
 const app = express()
@@ -29,7 +32,10 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Credentials', 'true')
   res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT,DELETE')
-  res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization')
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization'
+  )
   res.setHeader('Cache-Control', 'no-cache')
   next()
 })
@@ -38,26 +44,46 @@ app.options(/(.*)/, (req, res, next) => {
   res.sendStatus(200) //Always respond OK on OPTIONS requests.
 })
 
- // Serve static assets
- app.use(express.static(path.resolve(__dirname, 'build')))
+// Serve static assets
+app.use(express.static(path.resolve(__dirname, 'build')))
 
- router.get('/', function (req, res) {
-   res.send('Ready!')
- })
+router.get('/', function (req, res) {
+  res.send('Ready!')
+})
 
- app.use('/api', router)
- app.listen(PORT, function () {
-   console.log(`API running on PORT ${PORT}`)
- })
+app.use('/api', router)
+app.listen(PORT, function () {
+  console.log(`API running on PORT ${PORT}`)
+})
 
- router.route('/getBusinesses')
-   .get((req, res) => {
-     const {term, location, sortBy} = req.query
-     fetch(`https://api.yelp.com/v3/businesses/search?term=${term}&location=${location}&sort_by=${sortBy}`, {
-       headers: {
-         Authorization: `Bearer ${YELP_KEY}`
-       }
-     }).then(res => res.json()).then(response => {
-       res.json(response)
-     })
-   })
+router.route('/getBusinesses').get((req, res) => {
+  // for my food app on heroku
+  const {term, location, sortBy} = req.query
+  fetch(
+    `https://api.yelp.com/v3/businesses/search?term=${term}&location=${location}&sort_by=${sortBy}`,
+    {
+      headers: {
+        Authorization: `Bearer ${YELP_KEY}`,
+      },
+    }
+  )
+    .then((res) => res.json())
+    .then((response) => {
+      res.json(response)
+    })
+})
+
+router.route('/randomquotegenerator').get((req, res) => {
+  // for my quote generator app on heroku
+  fetch('https://quotes15.p.rapidapi.com/quotes/random/?language_code=en', {
+    method: 'GET',
+    headers: {
+      'x-rapidapi-host': 'quotes15.p.rapidapi.com',
+      'x-rapidapi-key': `${QUOTESKEY}`,
+    },
+  })
+    .then((res) => res.json())
+    .then((resp) => {
+      res.json(resp)
+    })
+})
